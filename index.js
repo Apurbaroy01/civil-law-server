@@ -8,7 +8,7 @@ app.use(cors())
 app.use(express.json())
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://apurba1234:apurba1234@cluster0.rqacs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -29,13 +29,27 @@ async function run() {
         const studentCollection = client.db("studentDB").collection("student");
 
 
-        app.post('/student', async(req, res) => {
-            const student= req.body;
+        app.post('/student', async (req, res) => {
+            const student = req.body;
+            const count = await studentCollection.countDocuments();
+            student.roll = count + 1;
             console.log(student)
             const result = await studentCollection.insertOne(student);
             res.send(result)
 
         });
+        app.get('/student', async(req, res) => {
+            const result = await studentCollection.find().toArray();
+            res.send(result);
+        })
+        app.get('/student/:id', async(req, res) => {
+            const id= req.params.id;
+            console.log(id)
+            const query={_id: new ObjectId(id)}
+            const result = await studentCollection.findOne(query)
+            res.send(result)
+        })
+
 
 
     } catch (error) {
