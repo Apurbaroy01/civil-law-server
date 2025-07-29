@@ -38,16 +38,35 @@ async function run() {
             res.send(result)
 
         });
-        app.get('/student', async(req, res) => {
+        app.get('/student', async (req, res) => {
             const result = await studentCollection.find().toArray();
             res.send(result);
         })
-        app.get('/student/:id', async(req, res) => {
-            const id= req.params.id;
+        app.get('/student/:id', async (req, res) => {
+            const id = req.params.id;
             console.log(id)
-            const query={_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await studentCollection.findOne(query)
             res.send(result)
+        })
+        app.put('/student/:id', async (req, res) => {
+            const id = req.params.id;
+            const { exam1, exam2, exam3, exam4, exam5 } = req.body;
+            console.log(id)
+            const query = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    exam1,
+                    exam2,
+                    exam3,
+                    exam4,
+                    exam5,
+
+                }
+            }
+            const result = await studentCollection.updateOne(query, updateDoc, options);
+            res.send(result);
         })
 
 
