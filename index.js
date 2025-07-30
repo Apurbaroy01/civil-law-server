@@ -49,12 +49,12 @@ async function run() {
             const result = await studentCollection.findOne(query)
             res.send(result)
         })
-        app.put('/student/:id', async (req, res) => {
+        app.patch('/student/:id', async (req, res) => {
             const id = req.params.id;
             const { exam1, exam2, exam3, exam4, exam5 } = req.body;
             console.log(id)
             const query = { _id: new ObjectId(id) }
-            const options = { upsert: true };
+            // const options = { upsert: true };
             const updateDoc = {
                 $set: {
                     exam1,
@@ -65,8 +65,40 @@ async function run() {
 
                 }
             }
+            const result = await studentCollection.updateOne(query, updateDoc);
+            res.send(result);
+        })
+
+        app.put('/student/:id', async (req, res) => {
+            const id = req.params.id;
+            const student = req.body;
+            console.log(id,student)
+            const query = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                   year: student.year,
+                   month: student.month,
+                   name: student.name,
+                   email: student.email,
+                   university: student.university,
+                   whatappNumber: student.whatappNumber,
+                   phoneNumber: student.phoneNumber,
+                   address: student.address,
+
+                }
+            }
             const result = await studentCollection.updateOne(query, updateDoc, options);
             res.send(result);
+        })
+
+
+        app.delete('/student/:id', async (req, res) => {
+            const id = req.params.id
+            console.log(id)
+            const query = { _id: new ObjectId(id) }
+            const result = await studentCollection.deleteMany(query);
+            res.send(result)
         })
 
 
