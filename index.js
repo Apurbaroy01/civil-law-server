@@ -72,19 +72,19 @@ async function run() {
         app.put('/student/:id', async (req, res) => {
             const id = req.params.id;
             const student = req.body;
-            console.log(id,student)
+            console.log(id, student)
             const query = { _id: new ObjectId(id) }
             const options = { upsert: true };
             const updateDoc = {
                 $set: {
-                   year: student.year,
-                   month: student.month,
-                   name: student.name,
-                   email: student.email,
-                   university: student.university,
-                   whatappNumber: student.whatappNumber,
-                   phoneNumber: student.phoneNumber,
-                   address: student.address,
+                    year: student.year,
+                    month: student.month,
+                    name: student.name,
+                    email: student.email,
+                    university: student.university,
+                    whatappNumber: student.whatappNumber,
+                    phoneNumber: student.phoneNumber,
+                    address: student.address,
 
                 }
             }
@@ -100,6 +100,15 @@ async function run() {
             const result = await studentCollection.deleteMany(query);
             res.send(result)
         })
+
+        // Node.js + Express backend example
+        app.get('/student', async (req, res) => {
+            const { year, month } = req.query;
+            const query = { year, month };
+            const students = await studentCollection.find(query).toArray();
+            res.send(students);
+        });
+
 
 
 
